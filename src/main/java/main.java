@@ -10,16 +10,22 @@ final public class main {
     final static IntBinaryOperator resta = (num1, num2) -> num1 - num2;
     //Multiplicación
     final static IntBinaryOperator multiplicacion = (num1, num2) -> {
-        return IntStream.range(0, Math.abs(num2) + 1).reduce((acumulado, numero) ->
-        suma.applyAsInt(num1, acumulado)).getAsInt();
+        Integer absNum1 = Math.abs(num1);
+        Integer absNum2 = Math.abs(num2);
+        Integer result =  IntStream.range(0, absNum2+1).
+                reduce((acc, current)->suma.applyAsInt(absNum1, acc)).
+                getAsInt();
+        return (num1 < 0 && num2 < 0)  || (num1 > 0 && num2 > 0)  ? result : -result;
     };
     //División
     final static IntBinaryOperator division = (num1, num2) -> {
-        return IntStream.range(0, num1)
-                .reduce((acumulado, numero) -> multiplicacion
-                        .applyAsInt(numero, num2)<=num1? suma
-                        .applyAsInt(acumulado, 1):acumulado)
+        if (num2 == 0) throw new IllegalArgumentException("0 No es un número válido");
+        Integer absDividend = Math.abs(num1);
+        Integer absDivisor = Math.abs(num2);
+        Integer result = IntStream.range(0, absDividend+1)
+                .reduce((acc, num) ->( multiplicacion.applyAsInt(num, absDivisor) <= absDividend) ? suma.applyAsInt(acc,1): acc)
                 .orElse(0);
+        return (num1 < 0 && num2 < 0)  || (num1 > 0 && num2 > 0)  ? result : -result;
     };
 
      public static void main(String[] args) {
